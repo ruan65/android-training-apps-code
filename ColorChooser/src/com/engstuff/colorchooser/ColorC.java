@@ -1,19 +1,21 @@
-package com.engstuff.colorchooser;
+package com.engstuff.colorchooser; //apk link http://yadi.sk/d/WXmwYi1_HPpgt
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class ColorC extends Activity implements OnSeekBarChangeListener {
+public class ColorC extends Activity implements OnSeekBarChangeListener, OnClickListener {
 
-	private final String TAG = ColorC.class.getSimpleName();
+	final static String TAG = ColorC.class.getSimpleName();
 	private Bitmap mBitmap;
 	private Canvas mCanvas;
 	private ImageView iv;
@@ -21,6 +23,7 @@ public class ColorC extends Activity implements OnSeekBarChangeListener {
 	private int alpha, r, g, b; // alpha, red, green, blue
 	private int colorHex;
 	private Paint tp;
+	public final static String EXTRA_MESSAGE_COLOR = "color_parametrs";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class ColorC extends Activity implements OnSeekBarChangeListener {
 		setContentView(R.layout.color_c);
 
 		iv = (ImageView) findViewById(R.id.colorView);
+		iv.setOnClickListener(this);
 		
 		sbAlfa = (SeekBar) findViewById(R.id.sbAlfa);
 		sbRed = (SeekBar) findViewById(R.id.sbRed);
@@ -95,12 +99,10 @@ public class ColorC extends Activity implements OnSeekBarChangeListener {
 		mCanvas.drawText("alpha: " + alpha, 10, 40, tp);
 		mCanvas.drawText("red:" + r + " green:" + g + " blue:" + b, 10, 80, tp);
 		mCanvas.drawText("#" + Integer.toHexString(colorHex), 10, 120, tp);
+		mCanvas.drawText("Tap to see full screen", 10, 180, tp);
 
 		iv.setImageBitmap(mBitmap);
 		iv.setAlpha(alpha);
-		Log.i(TAG, "fc change color alpha" + alpha + " r " + r + " g " + g
-				+ " b " + b + "col hex " + Long.toHexString(colorHex));
-		Log.i(TAG, Integer.toHexString(colorHex));
 
 	}
 
@@ -110,5 +112,15 @@ public class ColorC extends Activity implements OnSeekBarChangeListener {
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		String[] colorParams = {"alpha: " + alpha, "red:" + r + " green:" + g + " blue:" + b, 
+				"#" + Integer.toHexString(colorHex)};
+		Intent i = new Intent(this, FullScreenColor.class);
+		i.putExtra(EXTRA_MESSAGE_COLOR, colorParams);
+		startActivity(i);
 	}
 }
